@@ -96,28 +96,50 @@ struct MeigenWidgetEntryView : View {
     private let imageStorageService = ImageStorageService()
 
     var body: some View {
-        Group {
-            if let image = imageStorageService.load(filename: entry.fileNamePath) {
-                Image(uiImage: image)
+        GeometryReader { geometry in
+            Group {
+                if let image = imageStorageService.load(filename: entry.fileNamePath) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(
+                            width: geometry.size.width,
+                            height: geometry.size.height
+                        )
+                        .overlay(alignment: .bottomLeading) {
+                            Text("\(entry.text)")
+                                .font(.system(size: 15, weight: .semibold, design: .serif))
+                                .padding()
+                                .shadow(color: .black, radius: 10, x: 0, y: 0)
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.5)
+                                .background(
+                                    LinearGradient(
+                                        stops: [
+                                            .init(color: .clear, location: 0.0),
+                                            .init(color: .black.opacity(0.8), location: 0.1),
+                                            .init(color: .black.opacity(0.8), location: 1.0),
+                                        ],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                        }
+                } else {
+                    LinearGradient(
+                        colors: [.indigo.opacity(0.85), .black.opacity(0.92)],
+                        startPoint: .topLeading, endPoint: .bottomTrailing
+                    )
                     .overlay(alignment: .bottomLeading) {
                         Text("\(entry.text)")
                             .font(.system(size: 15, weight: .semibold, design: .serif))
                             .padding()
+                            .shadow(color: .black, radius: 10, x: 0, y: 0)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.5)
                     }
-            } else {
-                LinearGradient(
-                    colors: [.indigo.opacity(0.85), .black.opacity(0.92)],
-                    startPoint: .topLeading, endPoint: .bottomTrailing
-                )
-                .overlay(alignment: .bottomLeading) {
-                    Text("\(entry.text)")
-                        .font(.system(size: 15, weight: .semibold, design: .serif))
-                        .padding()
                 }
             }
-        }
-        .onAppear() {
-            print("\(String(describing: imageStorageService.load(filename: entry.fileNamePath)))")
         }
     }
 }

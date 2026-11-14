@@ -14,6 +14,5 @@ import SwiftUI
 struct MeigenWidgetBundle: WidgetBundle {
     var body: some Widget {
         MeigenWidget()
-        MeigenWidgetLiveActivity()
     }
 }

@@ -4,9 +4,19 @@ import UIKit
 struct ImageStorageService {
     private let folderName = "Quotes"
 
+//    private var folderURL: URL {
+//        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+//        return documents.appendingPathComponent(folderName, isDirectory: true)
+//    }
     private var folderURL: URL {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        return documents.appendingPathComponent(folderName, isDirectory: true)
+        let containerURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: "group.com.keeki.MeigenApp"
+        )!
+
+        return containerURL.appendingPathComponent(
+            folderName,
+            isDirectory: true
+        )
     }
 
     func save(_ data: Data) throws -> String {
