@@ -16,6 +16,7 @@ struct QuoteSwipeView: View {
     @State private var currentIndex = 0
     @State private var dragOffset: CGSize = .zero
     @State private var isAnimating = false
+    @State private var imageStorageService = ImageStorageService()
 
     private let swipeThreshold: CGFloat = 100
 
@@ -91,11 +92,20 @@ struct QuoteSwipeView: View {
 
     @ViewBuilder
     private func card(for index: Int) -> some View {
-        QuoteCardView(quote: quotes[index], image: nil)
-            .contentShape(RoundedRectangle(cornerRadius: 24))
-            .onTapGesture {
-                onSelect(quotes[index])
-            }
+        let fileName = quotes[index].imageFilename
+        if let image = imageStorageService.load(filename: fileName) {
+            QuoteCardView(quote: quotes[index], image: image)
+                .contentShape(RoundedRectangle(cornerRadius: 24))
+                .onTapGesture {
+                    onSelect(quotes[index])
+                }
+        } else {
+            QuoteCardView(quote: quotes[index], image: nil)
+                .contentShape(RoundedRectangle(cornerRadius: 24))
+                .onTapGesture {
+                    onSelect(quotes[index])
+                }
+        }
     }
 
     private func swipeCard(width: CGFloat, height: CGFloat) {

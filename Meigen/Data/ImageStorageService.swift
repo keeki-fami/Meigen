@@ -26,6 +26,7 @@ struct ImageStorageService {
 
     func load(filename: String?) -> UIImage? {
         guard let filename else { return nil }
+        print("filename: \(filename)")
         let url = folderURL.appendingPathComponent(filename)
         return UIImage(contentsOfFile: url.path)
     }

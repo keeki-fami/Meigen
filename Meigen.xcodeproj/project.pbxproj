@@ -71,6 +71,7 @@
 		94841EED30A8131D00D83927 /* Exceptions for "Meigen" folder in "MeigenWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Data/ImageStorageService.swift,
 				Data/SharedModelContainer.swift,
 				Model/Quote.swift,
 				Model/QuoteRecordModel.swift,

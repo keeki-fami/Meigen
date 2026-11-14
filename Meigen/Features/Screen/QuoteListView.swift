@@ -34,18 +34,6 @@ struct QuoteListView: View {
                     QuoteSwipeView(quotes: model.quotes) { quote in
                         selectedQuote = quote
                     }
-//                    TabView {
-//                        ForEach(model.quotes) { quote in
-//                            Button {
-//                                selectedQuote = quote
-//                            } label: {
-//                                QuoteCardView(quote: quote, image: model.image(for: quote))
-//                                    .padding(.horizontal, 20)
-//                            }
-//                            .buttonStyle(.plain)
-//                        }
-//                    }
-//                    .tabViewStyle(.page)
                 }
             }
             .navigationTitle("名言")

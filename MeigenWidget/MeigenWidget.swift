@@ -11,7 +11,8 @@ import SwiftUI
 import SwiftData
 
 // 表示するデータの提供
-struct Provider: AppIntentTimelineProvider {
+struct Provider: TimelineProvider {
+    
     func placeholder(in context: Context) -> MeigenEntry {
         MeigenEntry(
             date: Date(),
@@ -19,21 +20,28 @@ struct Provider: AppIntentTimelineProvider {
             fileNamePath: nil
         )
     }
-
-    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> MeigenEntry {
-        MeigenEntry(
-            date: Date(),
-            text: "Sample",
-            fileNamePath: nil
+    
+    func getSnapshot(in context: Context, completion: @escaping @Sendable (MeigenEntry) -> Void) {
+        completion(
+            MeigenEntry(
+                date: Date(),
+                text: "Sample",
+                fileNamePath: nil
+            )
         )
     }
     
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<MeigenEntry> {
+    func getTimeline(in context: Context, completion: @escaping @Sendable (Timeline<MeigenEntry>) -> Void) {
         let currentDate = Date()
         let entry = fetchRandomMeigen()
-        let nextUpdateDate = Calendar.current.date(byAdding: .hour, value: 12, to: currentDate)!
+        let nextUpdateDate = Calendar.current.date(byAdding: .minute, value: 5, to: currentDate)!
 
-        return Timeline(entries: [entry], policy: .after(nextUpdateDate))
+        completion(
+            Timeline(
+                entries: [entry],
+                policy: .after(nextUpdateDate)
+            )
+        )
     }
     
     func fetchRandomMeigen() -> MeigenEntry {
@@ -75,11 +83,6 @@ struct Provider: AppIntentTimelineProvider {
 //    }
 }
 
-// 表示するデータの内容
-//struct SimpleEntry: TimelineEntry {
-//    let date: Date
-//    let configuration: ConfigurationAppIntent
-//}
 
 struct MeigenEntry: TimelineEntry {
     let date: Date // widgetを表示する日付を指定する必要がある。
@@ -90,15 +93,31 @@ struct MeigenEntry: TimelineEntry {
 // ウィジェットのデザイン
 struct MeigenWidgetEntryView : View {
     var entry: Provider.Entry
+    private let imageStorageService = ImageStorageService()
 
     var body: some View {
-        VStack {
-            Rectangle()
-                .fill(.blue)
+        Group {
+            if let image = imageStorageService.load(filename: entry.fileNamePath) {
+                Image(uiImage: image)
+                    .overlay(alignment: .bottomLeading) {
+                        Text("\(entry.text)")
+                            .font(.system(size: 15, weight: .semibold, design: .serif))
+                            .padding()
+                    }
+            } else {
+                LinearGradient(
+                    colors: [.indigo.opacity(0.85), .black.opacity(0.92)],
+                    startPoint: .topLeading, endPoint: .bottomTrailing
+                )
                 .overlay(alignment: .bottomLeading) {
                     Text("\(entry.text)")
+                        .font(.system(size: 15, weight: .semibold, design: .serif))
                         .padding()
                 }
+            }
+        }
+        .onAppear() {
+            print("\(String(describing: imageStorageService.load(filename: entry.fileNamePath)))")
         }
     }
 }
@@ -108,25 +127,11 @@ struct MeigenWidget: Widget {
     let kind: String = "MeigenWidget"
 
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
             MeigenWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .contentMarginsDisabled()
-    }
-}
-
-extension ConfigurationAppIntent {
-    fileprivate static var smiley: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "😀"
-        return intent
-    }
-    
-    fileprivate static var starEyes: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "🤩"
-        return intent
     }
 }
 
