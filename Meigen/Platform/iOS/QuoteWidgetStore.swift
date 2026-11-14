@@ -3,7 +3,8 @@ import WidgetKit
 
 enum AppGroupID {
     // Replace with the App Group enabled for BOTH app and widget targets.
-    static let suiteName = "group.jp.example.Meigen"
+//    static let suiteName = "group.jp.example.Meigen"
+    static let suiteName = "group.com.TowaSakurada.MeigenApp"
 }
 
 struct WidgetQuote: Codable, Identifiable {

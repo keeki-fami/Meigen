@@ -32,6 +32,7 @@ struct Quote: Identifiable, Codable, Equatable, Sendable {
         self.updatedAt = updatedAt
     }
 
+    // カードに表示するtextを返すcomputing property
     var shareText: String {
         var lines = ["「\(text)」"]
         if let author { lines.append("— \(author)") }

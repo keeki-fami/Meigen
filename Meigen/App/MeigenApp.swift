@@ -8,10 +8,8 @@ struct MeigenApp: App {
     @State private var viewModel: QuoteViewModel
 
     init() {
-        let schema = Schema([QuoteRecord.self])
-        let configuration = ModelConfiguration(schema: schema)
         do {
-            let container = try ModelContainer(for: schema, configurations: [configuration])
+            let container = try SharedModelContainer.create()
             self.container = container
             _viewModel = State(
                 initialValue: QuoteViewModel(

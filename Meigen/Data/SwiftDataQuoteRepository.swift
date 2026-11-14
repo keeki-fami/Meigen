@@ -9,6 +9,7 @@ final class SwiftDataQuoteRepository: QuoteRepository {
         self.context = context
     }
 
+    // 全て作成した順番に取得
     func fetchAll() throws -> [Quote] {
         let descriptor = FetchDescriptor<QuoteRecord>(
             sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
@@ -16,6 +17,7 @@ final class SwiftDataQuoteRepository: QuoteRepository {
         return try context.fetch(descriptor).map { $0.asDomain() }
     }
 
+    // 同一idのレコードを取得し、更新する or 新しいデータをセーブする
     func save(_ quote: Quote) throws {
         let id = quote.id
         var descriptor = FetchDescriptor<QuoteRecord>(
@@ -30,6 +32,7 @@ final class SwiftDataQuoteRepository: QuoteRepository {
         try context.save()
     }
 
+    // 指定したidのレコードが存在した場合、削除する。
     func delete(id: UUID) throws {
         let targetID = id
         var descriptor = FetchDescriptor<QuoteRecord>(

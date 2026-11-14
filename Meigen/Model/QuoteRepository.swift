@@ -7,8 +7,3 @@ protocol QuoteRepository: AnyObject {
     func save(_ quote: Quote) throws
     func delete(id: UUID) throws
 }
-
-/// Optional remote boundary. Implement with URLSession on iOS and Ktor on Android.
-protocol QuoteSharingService: Sendable {
-    func publish(_ quote: Quote) async throws
-}
